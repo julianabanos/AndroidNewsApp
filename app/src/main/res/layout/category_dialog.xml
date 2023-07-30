@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="25dp"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:layout_margin="10dp"
+        android:text="编辑类别">
+
+    </TextView>
+    <TableLayout
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="6dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="*">
+
+        <TableRow>
+            <Button
+                android:id="@+id/btn_yule"
+                android:padding="6dp"
+                android:textStyle="bold"
+                android:backgroundTint="@color/vermilion"
+                android:textColor="@color/clear_bg"
+                android:layout_margin="6dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="娱乐"
+                android:textSize="20dp">
+
+            </Button>
+            <Button
+                android:id="@+id/btn_junshi"
+                android:padding="6dp"
+                android:textStyle="bold"
+                android:backgroundTint="@color/vermilion"
+                android:textColor="@color/clear_bg"
+                android:layout_margin="6dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="军事"
+                android:textSize="20dp">
+
+            </Button>
+            <Button
+                android:id="@+id/btn_jiaoyu"
+                android:padding="6dp"
+                android:textStyle="bold"
+                android:backgroundTint="@color/vermilion"
+                android:textColor="@color/clear_bg"
+                android:layout_margin="6dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="教育"
+                android:textSize="20dp">
+
+            </Button>
+        </TableRow>
+        <TableRow>
+            <Button
+                android:id="@+id/btn_wenhua"
+                android:padding="6dp"
+                android:textStyle="bold"
+                android:backgroundTint="@color/vermilion"
+                android:textColor="@color/clear_bg"
+                android:layout_margin="6dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="文化"
+                android:textSize="20dp">
+
+            </Button>
+            <Button
+                android:id="@+id/btn_jiankang"
+                android:padding="6dp"
+                android:textStyle="bold"
+                android:backgroundTint="@color/vermilion"
+                android:textColor="@color/clear_bg"
+                android:layout_margin="6dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="健康"
+                android:textSize="20dp">
+
+            </Button>
+            <Button
+                android:id="@+id/btn_caijing"
+                android:padding="6dp"
+                android:textStyle="bold"
+                android:backgroundTint="@color/vermilion"
+                android:textColor="@color/clear_bg"
+                android:layout_margin="6dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="财经"
+                android:textSize="20dp">
+
+            </Button>
+        </TableRow>
+        <TableRow>
+            <Button
+                android:id="@+id/btn_tiyu"
+                android:padding="6dp"
+                android:textStyle="bold"
+                android:backgroundTint="@color/vermilion"
+                android:textColor="@color/clear_bg"
+                android:layout_margin="6dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="体育"
+                android:textSize="20dp">
+
+            </Button>
+            <Button
+                android:id="@+id/btn_qiche"
+                android:padding="6dp"
+                android:textStyle="bold"
+                android:backgroundTint="@color/vermilion"
+                android:textColor="@color/clear_bg"
+                android:layout_margin="6dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="汽车"
+                android:textSize="20dp">
+
+            </Button>
+            <Button
+                android:id="@+id/btn_keji"
+                android:padding="6dp"
+                android:textStyle="bold"
+                android:backgroundTint="@color/vermilion"
+                android:textColor="@color/clear_bg"
+                android:layout_margin="6dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="科技"
+                android:textSize="20dp">
+
+            </Button>
+        </TableRow>
+        <TableRow>
+
+            <Button
+                android:id="@+id/btn_shehui"
+                android:padding="6dp"
+                android:textStyle="bold"
+                android:backgroundTint="@color/vermilion"
+                android:textColor="@color/clear_bg"
+                android:layout_margin="6dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="社会"
+                android:textSize="20dp">
+
+            </Button>
+            <Button
+            android:id="@+id/btn_ok"
+            android:padding="6dp"
+            android:textStyle="bold"
+            android:backgroundTint="@color/black"
+            android:textColor="@color/white"
+            android:layout_margin="6dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="确定"
+            android:textSize="20dp">
+
+        </Button>
+
+        </TableRow>
+
+
+    </TableLayout>
+
+</LinearLayout>

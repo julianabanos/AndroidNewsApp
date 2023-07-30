@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_nav"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom|end"
+            android:background="@color/clear_bg"
+            app:menu="@menu/bottom_nav_menu">
+
+        </com.google.android.material.bottomnavigation.BottomNavigationView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <HorizontalScrollView
+                    android:layout_width="2in"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="6dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <Button
+                            android:id="@+id/btn_1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="6dp"
+                            android:backgroundTint="@color/lightest_vermilion"
+                            android:padding="6dp"
+                            android:text="娱乐"
+                            android:textSize="16sp"
+                            android:textStyle="bold">
+
+                        </Button>
+
+                        <Button
+                            android:id="@+id/btn_2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="6dp"
+                            android:backgroundTint="@color/lightest_vermilion"
+                            android:padding="6dp"
+                            android:text="军事"
+                            android:textSize="16sp"
+                            android:textStyle="bold">
+
+                        </Button>
+
+                        <Button
+                            android:id="@+id/btn_3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="6dp"
+                            android:backgroundTint="@color/lightest_vermilion"
+                            android:padding="6dp"
+                            android:text="教育"
+                            android:textSize="16sp"
+                            android:textStyle="bold">
+
+                        </Button>
+
+                        <Button
+                            android:id="@+id/btn_4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="6dp"
+                            android:backgroundTint="@color/lightest_vermilion"
+                            android:padding="6dp"
+                            android:text="文化"
+                            android:textSize="16sp"
+                            android:textStyle="bold">
+
+                        </Button>
+
+                        <Button
+                            android:id="@+id/btn_5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="6dp"
+                            android:backgroundTint="@color/lightest_vermilion"
+                            android:padding="6dp"
+                            android:text="健康"
+                            android:textSize="16sp"
+                            android:textStyle="bold">
+
+                        </Button>
+
+                        <Button
+                            android:id="@+id/btn_6"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="6dp"
+                            android:backgroundTint="@color/lightest_vermilion"
+                            android:padding="6dp"
+                            android:text="财经"
+                            android:textSize="16sp"
+                            android:textStyle="bold">
+
+                        </Button>
+
+                        <Button
+                            android:id="@+id/btn_7"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="6dp"
+                            android:backgroundTint="@color/lightest_vermilion"
+                            android:padding="6dp"
+                            android:text="体育"
+                            android:textSize="16sp"
+                            android:textStyle="bold">
+
+                        </Button>
+
+                        <Button
+                            android:id="@+id/btn_8"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="6dp"
+                            android:backgroundTint="@color/lightest_vermilion"
+                            android:padding="6dp"
+                            android:text="汽车"
+                            android:textSize="16sp"
+                            android:textStyle="bold">
+
+                        </Button>
+
+                        <Button
+                            android:id="@+id/btn_9"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="6dp"
+                            android:backgroundTint="@color/lightest_vermilion"
+                            android:padding="6dp"
+                            android:text="科技"
+                            android:textSize="16sp"
+                            android:textStyle="bold">
+
+                        </Button>
+
+                        <Button
+                            android:id="@+id/btn_10"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="6dp"
+                            android:backgroundTint="@color/lightest_vermilion"
+                            android:padding="6dp"
+                            android:text="社会"
+                            android:textSize="16sp"
+                            android:textStyle="bold">
+
+                        </Button>
+
+
+                    </LinearLayout>
+                </HorizontalScrollView>
+
+                <Button
+                    android:id="@+id/category_add"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:backgroundTint="@color/lightest_vermilion"
+                    android:padding="6dp"
+                    android:text="+"
+                    android:textSize="16sp"
+                    android:textStyle="bold">
+
+                </Button>
+
+            </LinearLayout>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="14dp"
+                android:layout_marginTop="4dp"
+                app:cardElevation="8dp">
+
+                <androidx.appcompat.widget.SearchView
+                    android:id="@+id/search_view"
+                    android:layout_width="match_parent"
+
+                    android:layout_height="?attr/actionBarSize"
+                    app:defaultQueryHint="搜索新闻">
+
+                </androidx.appcompat.widget.SearchView>
+
+            </androidx.cardview.widget.CardView>
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/swipe_refresh">
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/main_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp">
+
+            </androidx.recyclerview.widget.RecyclerView>
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </LinearLayout>
+
+
+</RelativeLayout>
