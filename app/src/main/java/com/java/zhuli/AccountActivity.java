@@ -17,7 +17,6 @@ import java.util.ArrayList;
 
 public class AccountActivity extends AppCompatActivity implements FragmentCommunicator{
 
-
     TextView text;
     ArrayList<Integer> numbers;
     BottomNavigationView bottomNavigationView, nav_view;
@@ -46,6 +45,7 @@ public class AccountActivity extends AppCompatActivity implements FragmentCommun
                     case R.id.home:
                         startActivity(new Intent(getApplicationContext(),MainActivity.class));
                         overridePendingTransition(0,0);
+                        finish();
                         return true;
                     case R.id.personal:
                         return true;

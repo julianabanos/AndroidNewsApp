@@ -21,7 +21,7 @@ public class RequestManager {
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 
-    public void getNewsHeadlines(OnFetchDataListener listener, String size, String startDate, String endDate, String words, String categories)
+    public void getNewsHeadlines(OnFetchDataListener listener, String startDate, String endDate, String words, String categories, String option)
     {
         CallNewsApi callNewsApi = retrofit.create(CallNewsApi.class);
         Call<APIResponse> call = callNewsApi.callHeadlines("15", startDate, endDate, words, categories);
@@ -34,7 +34,7 @@ public class RequestManager {
                         Toast.makeText(context, "Error!", Toast.LENGTH_SHORT).show();
                     }
 
-                    listener.onFetchData(response.body().getData(), response.message());
+                    listener.onFetchData(response.body().getData(), response.message(), option);
                 }
 
                 @Override

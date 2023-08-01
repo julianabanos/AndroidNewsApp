@@ -177,7 +177,7 @@ public class Data implements Serializable {
         this.who = who;
     }
 
-    public void setSaved(){this.saved = true;}
+    public void setSaved(boolean value){this.saved = value;}
 
     public Boolean getSaved(){return this.saved;}
     @Override

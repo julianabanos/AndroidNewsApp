@@ -2,7 +2,6 @@ package com.java.zhuli;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -15,7 +14,6 @@ import android.widget.VideoView;
 
 import com.java.zhuli.Models.Data;
 import com.java.zhuli.db.DbArticles;
-import com.java.zhuli.db.DbHelper;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -42,6 +40,8 @@ public class DetailActivity extends AppCompatActivity {
         video_view = findViewById(R.id.video_news);
         video_url = "";
 
+        /* Set visibility */
+        video_view.setVisibility(View.GONE);
 
         art_title = findViewById(R.id.detail_text_title);
         art_author = findViewById(R.id.detail_text_author);
@@ -49,9 +49,12 @@ public class DetailActivity extends AppCompatActivity {
         art_content = findViewById(R.id.detail_text_content);
         art_img = findViewById(R.id.detail_img_news);
 
+        /* Set visibility */
+        art_img.setVisibility(View.GONE);
+
         headlines = (Data) getIntent().getSerializableExtra("data");
 
-        // Set as saved
+        /* Set as saved */
         saved = headlines.getSaved();
         if (saved == true){
             save.setBackgroundColor(getApplication().getResources().getColor(R.color.lightest_vermilion));
@@ -64,7 +67,10 @@ public class DetailActivity extends AppCompatActivity {
         art_author.setText(headlines.getPublisher());
         art_time.setText(headlines.getPublishTime());
         art_content.setText(headlines.getContent());
+
         if (headlines.getVideo() != ""){
+
+            video_view.setVisibility(View.VISIBLE);
 
             video_url = headlines.getVideo();
             Uri uri = Uri.parse(video_url);
@@ -76,6 +82,9 @@ public class DetailActivity extends AppCompatActivity {
             video_view.start();
         }
         if (headlines.getImage() != ""){
+
+            art_img.setVisibility(View.VISIBLE);
+
             img_url = headlines.getImage();
             img_url = img_url.substring(1, img_url.length() -1);
             String[] imageLinkArr = img_url.split(",");
@@ -90,14 +99,26 @@ public class DetailActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 if (saved == true){
-                    headlines.setSaved();
+                    headlines.setSaved(false);
                     save.setBackgroundColor(getApplication().getResources().getColor(R.color.lightest_vermilion));
+                    /* Need to delete from database */
                 }
-                else{
-                    headlines.setSaved();
+                else {
+                    headlines.setSaved(true);
+                    save.setBackgroundColor(getApplication().getResources().getColor(R.color.lightest_vermilion));
+
+                    /* SAVE TO DATABASE */
+                    DbArticles dbArticles = new DbArticles(DetailActivity.this);
+                    long id = dbArticles.insertArticle(headlines.getImage(), headlines.getTitle(), headlines.getPublishTime(), headlines.getLanguage(), headlines.getVideo(), headlines.getContent(), headlines.getUrl(), headlines.getNewsID(), headlines.getCrawlTime(), headlines.getPublisher(), headlines.getCategory(), headlines.getSaved());
+                    if (id > 0){
+                        Toast.makeText(DetailActivity.this, "Article Saved", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(DetailActivity.this, "Error Saving", Toast.LENGTH_LONG).show();
+                    }
+                    /* DATABASE */
                 }
 
-                /* DATABASE */
+                /* DATABASE
                 DbArticles dbArticles = new DbArticles(DetailActivity.this);
                 long id = dbArticles.insertArticle(headlines.getImage(), headlines.getTitle(), headlines.getPublishTime(), headlines.getLanguage(), headlines.getVideo(), headlines.getContent(), headlines.getUrl(), headlines.getNewsID(), headlines.getCrawlTime(), headlines.getPublisher(), headlines.getCategory(), headlines.getSaved());
                 if (id > 0){
@@ -108,7 +129,7 @@ public class DetailActivity extends AppCompatActivity {
 
                 /* DATABASE */
 
-                /*
+
                 try {
 
                     String temp = JSONSaved.getData(DetailActivity.this);
@@ -135,7 +156,7 @@ public class DetailActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                 */
+
             }
         });
 

@@ -30,7 +30,7 @@
                 android:orientation="horizontal">
 
                 <HorizontalScrollView
-                    android:layout_width="2in"
+                    android:layout_width="340dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="6dp">
 
@@ -39,130 +39,140 @@
                         android:layout_height="wrap_content">
 
                         <Button
+                            tools:ignore="ButtonStyle"
                             android:id="@+id/btn_1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="6dp"
                             android:backgroundTint="@color/lightest_vermilion"
                             android:padding="6dp"
-                            android:text="娱乐"
+                            android:text="@string/btn1"
                             android:textSize="16sp"
                             android:textStyle="bold">
 
                         </Button>
 
                         <Button
+                            tools:ignore="ButtonStyle"
                             android:id="@+id/btn_2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="6dp"
                             android:backgroundTint="@color/lightest_vermilion"
                             android:padding="6dp"
-                            android:text="军事"
+                            android:text="@string/btn2"
                             android:textSize="16sp"
                             android:textStyle="bold">
 
                         </Button>
 
                         <Button
+                            tools:ignore="ButtonStyle"
                             android:id="@+id/btn_3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="6dp"
                             android:backgroundTint="@color/lightest_vermilion"
                             android:padding="6dp"
-                            android:text="教育"
+                            android:text="@string/btn3"
                             android:textSize="16sp"
                             android:textStyle="bold">
 
                         </Button>
 
                         <Button
+                            tools:ignore="ButtonStyle"
                             android:id="@+id/btn_4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="6dp"
                             android:backgroundTint="@color/lightest_vermilion"
                             android:padding="6dp"
-                            android:text="文化"
+                            android:text="@string/btn4"
                             android:textSize="16sp"
                             android:textStyle="bold">
 
                         </Button>
 
                         <Button
+                            tools:ignore="ButtonStyle"
                             android:id="@+id/btn_5"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="6dp"
                             android:backgroundTint="@color/lightest_vermilion"
                             android:padding="6dp"
-                            android:text="健康"
+                            android:text="@string/btn5"
                             android:textSize="16sp"
                             android:textStyle="bold">
 
                         </Button>
 
                         <Button
+                            tools:ignore="ButtonStyle"
                             android:id="@+id/btn_6"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="6dp"
                             android:backgroundTint="@color/lightest_vermilion"
                             android:padding="6dp"
-                            android:text="财经"
+                            android:text="@string/btn6"
                             android:textSize="16sp"
                             android:textStyle="bold">
 
                         </Button>
 
                         <Button
+                            tools:ignore="ButtonStyle"
                             android:id="@+id/btn_7"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="6dp"
                             android:backgroundTint="@color/lightest_vermilion"
                             android:padding="6dp"
-                            android:text="体育"
+                            android:text="@string/btn7"
                             android:textSize="16sp"
                             android:textStyle="bold">
 
                         </Button>
 
                         <Button
+                            tools:ignore="ButtonStyle"
                             android:id="@+id/btn_8"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="6dp"
                             android:backgroundTint="@color/lightest_vermilion"
                             android:padding="6dp"
-                            android:text="汽车"
+                            android:text="@string/btn8"
                             android:textSize="16sp"
                             android:textStyle="bold">
 
                         </Button>
 
                         <Button
+                            tools:ignore="ButtonStyle"
                             android:id="@+id/btn_9"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="6dp"
                             android:backgroundTint="@color/lightest_vermilion"
                             android:padding="6dp"
-                            android:text="科技"
+                            android:text="@string/btn9"
                             android:textSize="16sp"
                             android:textStyle="bold">
 
                         </Button>
 
                         <Button
+                            tools:ignore="ButtonStyle"
                             android:id="@+id/btn_10"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="6dp"
                             android:backgroundTint="@color/lightest_vermilion"
                             android:padding="6dp"
-                            android:text="社会"
+                            android:text="@string/btn10"
                             android:textSize="16sp"
                             android:textStyle="bold">
 
@@ -173,13 +183,14 @@
                 </HorizontalScrollView>
 
                 <Button
+                    tools:ignore="ButtonStyle"
                     android:id="@+id/category_add"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="12dp"
                     android:backgroundTint="@color/lightest_vermilion"
                     android:padding="6dp"
-                    android:text="+"
+                    android:text="@string/add"
                     android:textSize="16sp"
                     android:textStyle="bold">
 

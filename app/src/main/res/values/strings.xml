@@ -4,6 +4,20 @@
     <string name="personal">个人信息</string>
     <string name="history">历史</string>
     <string name="saved">收藏</string>
+
+    <!-- MENU BUTTON NAMES -->
+    <string name="btn1">娱乐</string>
+    <string name="btn2">军事</string>
+    <string name="btn3">教育</string>
+    <string name="btn4">文化</string>
+    <string name="btn5">健康</string>
+    <string name="btn6">财经</string>
+    <string name="btn7">体育</string>
+    <string name="btn8">汽车</string>
+    <string name="btn9">科技</string>
+    <string name="btn10">社会</string>
+    <string name="add">+</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

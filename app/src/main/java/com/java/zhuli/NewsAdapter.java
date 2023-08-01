@@ -1,6 +1,7 @@
 package com.java.zhuli;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +21,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsViewHolder>{
 
     public NewsAdapter(Context context, List<Data> headlines, SelectListener listener) {
         this.context = context;
-        this.headlines = headlines;
         this.listener = listener;
+        this.headlines = headlines;
     }
 
     @NonNull
@@ -59,5 +60,9 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsViewHolder>{
     @Override
     public int getItemCount() {
         return headlines.size();
+    }
+
+    public String getLastDate(){
+        return headlines.get(headlines.size()-1).getPublishTime();
     }
 }

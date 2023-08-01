@@ -1,7 +1,11 @@
 package com.java.zhuli;
 
+import static com.java.zhuli.db.DbHelper.TABLE_ARTICLES;
+
 import android.app.Activity;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -11,12 +15,18 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.java.zhuli.Models.Data;
+import com.java.zhuli.adapters.ArticleListAdapter;
+import com.java.zhuli.adapters.HistoryAdapter;
+import com.java.zhuli.adapters.SavedAdapter;
+import com.java.zhuli.db.DbArticles;
+import com.java.zhuli.db.DbHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,12 +36,10 @@ import java.util.ArrayList;
 
 public class SavedFragment extends Fragment {
 
-    HistoryAdapter adapter;
+    SavedAdapter saved_adapter;
     ArrayList<Data> saved_data = new ArrayList<Data>();
     RecyclerView savedView;
     Button clear;
-
-    //references to communicate
     Activity activity;
     FragmentCommunicator interfaceCommunicator;
 
@@ -40,60 +48,83 @@ public class SavedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_saved, container, false);
         savedView = view.findViewById(R.id.saved_recycler);
+
         clear = view.findViewById(R.id.erase);
+
+        /* Clear all saved from database
+
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 JSONSaved.clear(getContext(), "");
             }
         });
+
+        */
+
         loadList();
+        Log.d("myTag", "List Loaded");
         showData();
         return view;
     }
 
     private void loadList() {
-        int x = 0;
-        String json = JSONSaved.getData(getActivity());
-        System.out.println(json);
-        try {
-            JSONArray jsonObj = new JSONArray(json);
-            for (int i= jsonObj.length()-1; i >= 0; i--){
-                JSONObject Obj = (JSONObject) jsonObj.get(i);
-                Data Item = new Data();
-                Item.setImage((String) Obj.get("image"));
-                Item.setTitle((String) Obj.get("title"));
-                Item.setPublishTime((String) Obj.get("publishTime"));
-                Item.setLanguage((String) Obj.get("language"));
-                Item.setVideo((String) Obj.get("video"));
-                Item.setContent((String) Obj.get("content"));
-                Item.setUrl((String) Obj.get("url"));
-                Item.setNewsID((String) Obj.get("newsID"));
-                Item.setCrawlTime((String) Obj.get("crawlTime"));
-                Item.setPublisher((String) Obj.get("publisher"));
-                Item.setCategory((String) Obj.get("category"));
+
+        DbHelper dbHelper = new DbHelper(getContext());
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        Cursor articleCursor = null;
+
+        articleCursor = db.rawQuery("SELECT * FROM " + TABLE_ARTICLES, null);
+
+        if (articleCursor.moveToFirst()){
+            int x = 0;
+            do {
+                Data article = new Data();
+                article.setImage(articleCursor.getString(1));
+                Log.d("Image: ", articleCursor.getString(1));
+                article.setTitle(articleCursor.getString(2));
+                article.setPublishTime(articleCursor.getString(3));
+                article.setLanguage(articleCursor.getString(4));
+                article.setVideo(articleCursor.getString(5));
+                article.setContent(articleCursor.getString(6));
+                article.setUrl(articleCursor.getString(7));
+                article.setNewsID(articleCursor.getString(8));
+                article.setCrawlTime(articleCursor.getString(9));
+                article.setPublisher(articleCursor.getString(10));
+                article.setCategory(articleCursor.getString(11));
+                /* Boolean saved */
+                boolean value = false;
+                if (articleCursor.getInt(12) == 1){
+                    value = true;
+                }
+                article.setSaved(value);
 
                 for (int j=0; j < saved_data.size(); j++){
-                    if (saved_data.get(j).getTitle().equals(Item.getTitle())){
+                    if (saved_data.get(j).getTitle().equals(article.getTitle())){
                         x = 1;
                     }
                 }
                 if (x != 1){
-                    saved_data.add(Item);
+                    saved_data.add(article);
                 }
-                System.out.println(Item.toString());
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
+
+            } while (articleCursor.moveToNext());
+
         }
+
+        articleCursor.close();
+
+        Log.d("List", saved_data.toString());
+
     }
 
     private void showData() {
         savedView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new HistoryAdapter(getContext(), saved_data);
-        savedView.setAdapter(adapter);
+        saved_adapter = new SavedAdapter(getContext(), saved_data);
+        savedView.setAdapter(saved_adapter);
 
-        adapter.setOnClickListener(new View.OnClickListener() {
+        saved_adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 interfaceCommunicator.sendObject(saved_data.get(savedView.getChildAdapterPosition(view)));

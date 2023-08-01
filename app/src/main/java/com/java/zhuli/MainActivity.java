@@ -11,7 +11,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -24,14 +23,15 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.java.zhuli.Models.APIResponse;
 import com.java.zhuli.Models.Data;
 import com.java.zhuli.db.DbHelper;
+import com.java.zhuli.utils.DateToday;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -43,32 +43,22 @@ public class MainActivity extends AppCompatActivity implements SelectListener, V
     RecyclerView recyclerView;
     NewsAdapter adapter;
     ProgressDialog load_dialog;
-    String cur_date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
     Button b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, add;
     Boolean bt1=true, bt2=true, bt3=true, bt4=true, bt5=true, bt6=true, bt7=true, bt8=true, bt9=true, bt10=true;
     SearchView searchView;
     String curr_query;
-    private static FileWriter file;
+    String date_today = DateToday.returnDate();
     public String chosenCategory = "";
+    List<Data> shownArticles;
 
     private boolean loading = true;
-    int pastVisiblesItems, visibleItemCount, totalItemCount;
+    int pastVisibleItems, visibleItemCount, totalItemCount;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        File file = new File(this.getFilesDir().getPath() + "/" + "save.json");
-        if(!file.exists()){
-            JSONSaved.saveData(this, "");
-        }
-
-        File file2 = new File(this.getFilesDir().getPath() + "/" + "user.json");
-        if(!file2.exists()){
-            MyJSON.saveData(this, "");
-        }
 
         /* CREATE DATABASE */
 
@@ -83,7 +73,8 @@ public class MainActivity extends AppCompatActivity implements SelectListener, V
         /* CREATE DATABASE */
 
 
-        // Initialize and assign variable
+        /* Initialize and assign variable */
+
         BottomNavigationView bottomNavigationView=findViewById(R.id.bottom_nav);
         mLayoutManager = new LinearLayoutManager(this);
         recyclerView = findViewById((R.id.main_recycler));
@@ -91,16 +82,18 @@ public class MainActivity extends AppCompatActivity implements SelectListener, V
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(mLayoutManager);
 
+
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            /*
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) { //check for scroll down
+                if (dy > 0) { // Check for scroll down
                     visibleItemCount = mLayoutManager.getChildCount();
                     totalItemCount = mLayoutManager.getItemCount();
-                    pastVisiblesItems = mLayoutManager.findFirstVisibleItemPosition();
+                    pastVisibleItems = mLayoutManager.findFirstVisibleItemPosition();
 
                     if (loading) {
-                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
                             loading = false;
                             Log.v("...", "Last Item Wow !");
                             // Do pagination.. i.e. fetch new data
@@ -109,24 +102,22 @@ public class MainActivity extends AppCompatActivity implements SelectListener, V
                     }
                 }
             }
-        });
+            */
 
-        bottomNavigationView.setSelectedItemId(R.id.home);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch(item.getItemId())
-                {
-                    case R.id.personal:
-                        startActivity(new Intent(getApplicationContext(),AccountActivity.class));
-                        overridePendingTransition(0,0);
-                        return true;
-                    case R.id.home:
-                        return true;
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (!recyclerView.canScrollVertically(1)) {
+                    Log.d("Last date", DateToday.cutDate(adapter.getLastDate()));
+                    downRequest(DateToday.cutDate(adapter.getLastDate()));
+
+                    Log.d("Mytag", "Last");
+
                 }
-                return false;
             }
         });
+
 
         searchView = findViewById(R.id.search_view);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -136,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements SelectListener, V
                 load_dialog.setTitle("搜索新闻。。。");
                 load_dialog.show();
                 RequestManager manager = new RequestManager(MainActivity.this);
-                manager.getNewsHeadlines(listener, "1", "2021-09-01", "2021-12-31", query, "");
+                manager.getNewsHeadlines(listener, "2021-09-01", "2021-12-31", query, "", "None");
                 return true;
             }
 
@@ -180,16 +171,35 @@ public class MainActivity extends AppCompatActivity implements SelectListener, V
             }
         });
 
-        // API Request
+        /* API Request */
         RequestManager manager = new RequestManager(this);
-        manager.getNewsHeadlines(listener, "1", "2019-09-01", "2021-12-31", "", "");
+        manager.getNewsHeadlines(listener, "2019-09-01", date_today, "", "", "None");
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                request();
+                upRequest();
                 swipeRefreshLayout.setRefreshing(false);
 
+            }
+        });
+
+        /* Bottom Navigation  */
+        bottomNavigationView.setSelectedItemId(R.id.home);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch(item.getItemId())
+                {
+                    case R.id.personal:
+                        startActivity(new Intent(getApplicationContext(),AccountActivity.class));
+                        overridePendingTransition(0,0);
+                        finish();
+                        return true;
+                    case R.id.home:
+                        return true;
+                }
+                return false;
             }
         });
     }
@@ -220,11 +230,11 @@ public class MainActivity extends AppCompatActivity implements SelectListener, V
         //Keep view of buttons
         {
             {
-                if (bt1 == false) {
+                if (!bt1) {
                     btn1.setTextColor(getApplication().getResources().getColor(R.color.vermilion));
                     btn1.setBackgroundColor(getApplication().getResources().getColor(R.color.clear_bg));
 
-                } else if (bt1) {
+                } else {
                     btn1.setTextColor(getApplication().getResources().getColor(R.color.clear_bg));
                     btn1.setBackgroundColor(getApplication().getResources().getColor(R.color.vermilion));
                 }
@@ -232,91 +242,91 @@ public class MainActivity extends AppCompatActivity implements SelectListener, V
 
             }
             {
-                if (bt2 == false) {
+                if (!bt2) {
                     btn2.setTextColor(getApplication().getResources().getColor(R.color.vermilion));
                     btn2.setBackgroundColor(getApplication().getResources().getColor(R.color.clear_bg));
 
-                } else if (bt2) {
+                } else {
                     btn2.setTextColor(getApplication().getResources().getColor(R.color.clear_bg));
                     btn2.setBackgroundColor(getApplication().getResources().getColor(R.color.vermilion));
                 }
             }
             {
-                if (bt3 == false) {
+                if (!bt3) {
                     btn3.setTextColor(getApplication().getResources().getColor(R.color.vermilion));
                     btn3.setBackgroundColor(getApplication().getResources().getColor(R.color.clear_bg));
 
-                } else if (bt3) {
+                } else {
                     btn3.setTextColor(getApplication().getResources().getColor(R.color.clear_bg));
                     btn3.setBackgroundColor(getApplication().getResources().getColor(R.color.vermilion));
                 }
             }
             {
-                if (bt4 == false) {
+                if (!bt4) {
                     btn4.setTextColor(getApplication().getResources().getColor(R.color.vermilion));
                     btn4.setBackgroundColor(getApplication().getResources().getColor(R.color.clear_bg));
 
-                } else if (bt4) {
+                } else {
                     btn4.setTextColor(getApplication().getResources().getColor(R.color.clear_bg));
                     btn4.setBackgroundColor(getApplication().getResources().getColor(R.color.vermilion));
                 }
             }
             {
-                if (bt5 == false) {
+                if (!bt5) {
                     btn5.setTextColor(getApplication().getResources().getColor(R.color.vermilion));
                     btn5.setBackgroundColor(getApplication().getResources().getColor(R.color.clear_bg));
 
-                } else if (bt5) {
+                } else {
                     btn5.setTextColor(getApplication().getResources().getColor(R.color.clear_bg));
                     btn5.setBackgroundColor(getApplication().getResources().getColor(R.color.vermilion));
                 }
             }
             {
-                if (bt6 == false) {
+                if (!bt6) {
                     btn6.setTextColor(getApplication().getResources().getColor(R.color.vermilion));
                     btn6.setBackgroundColor(getApplication().getResources().getColor(R.color.clear_bg));
 
-                } else if (bt6) {
+                } else {
                     btn6.setTextColor(getApplication().getResources().getColor(R.color.clear_bg));
                     btn6.setBackgroundColor(getApplication().getResources().getColor(R.color.vermilion));
                 }
             }
             {
-                if (bt7 == false) {
+                if (!bt7) {
                     btn7.setTextColor(getApplication().getResources().getColor(R.color.vermilion));
                     btn7.setBackgroundColor(getApplication().getResources().getColor(R.color.clear_bg));
 
-                } else if (bt7) {
+                } else {
                     btn7.setTextColor(getApplication().getResources().getColor(R.color.clear_bg));
                     btn7.setBackgroundColor(getApplication().getResources().getColor(R.color.vermilion));
                 }
             }
             {
-                if (bt8 == false) {
+                if (!bt8) {
                     btn8.setTextColor(getApplication().getResources().getColor(R.color.vermilion));
                     btn8.setBackgroundColor(getApplication().getResources().getColor(R.color.clear_bg));
 
-                } else if (bt8) {
+                } else {
                     btn8.setTextColor(getApplication().getResources().getColor(R.color.clear_bg));
                     btn8.setBackgroundColor(getApplication().getResources().getColor(R.color.vermilion));
                 }
             }
             {
-                if (bt9 == false) {
+                if (!bt9) {
                     btn9.setTextColor(getApplication().getResources().getColor(R.color.vermilion));
                     btn9.setBackgroundColor(getApplication().getResources().getColor(R.color.clear_bg));
 
-                } else if (bt9) {
+                } else {
                     btn9.setTextColor(getApplication().getResources().getColor(R.color.clear_bg));
                     btn9.setBackgroundColor(getApplication().getResources().getColor(R.color.vermilion));
                 }
             }
             {
-                if (bt10 == false) {
+                if (!bt10) {
                     btn10.setTextColor(getApplication().getResources().getColor(R.color.vermilion));
                     btn10.setBackgroundColor(getApplication().getResources().getColor(R.color.clear_bg));
 
-                } else if (bt10) {
+                } else {
                     btn10.setTextColor(getApplication().getResources().getColor(R.color.clear_bg));
                     btn10.setBackgroundColor(getApplication().getResources().getColor(R.color.vermilion));
                 }
@@ -325,13 +335,13 @@ public class MainActivity extends AppCompatActivity implements SelectListener, V
             btn1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (bt1 == false) {
+                    if (!bt1) {
                         btn1.setTextColor(getApplication().getResources().getColor(R.color.clear_bg));
                         btn1.setBackgroundColor(getApplication().getResources().getColor(R.color.vermilion));
                         bt1 = true;
                         b1.setVisibility(View.VISIBLE);
 
-                    } else if (bt1) {
+                    } else {
                         btn1.setTextColor(getApplication().getResources().getColor(R.color.vermilion));
                         btn1.setBackgroundColor(getApplication().getResources().getColor(R.color.clear_bg));
                         bt1 = false;
@@ -342,13 +352,13 @@ public class MainActivity extends AppCompatActivity implements SelectListener, V
             btn2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (bt2 == false) {
+                    if (!bt2) {
                         btn2.setTextColor(getApplication().getResources().getColor(R.color.clear_bg));
                         btn2.setBackgroundColor(getApplication().getResources().getColor(R.color.vermilion));
                         bt2 = true;
                         b2.setVisibility(View.VISIBLE);
 
-                    } else if (bt2) {
+                    } else {
                         btn2.setTextColor(getApplication().getResources().getColor(R.color.vermilion));
                         btn2.setBackgroundColor(getApplication().getResources().getColor(R.color.clear_bg));
                         bt2 = false;
@@ -359,13 +369,13 @@ public class MainActivity extends AppCompatActivity implements SelectListener, V
             btn3.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (bt3 == false) {
+                    if (!bt3) {
                         btn3.setTextColor(getApplication().getResources().getColor(R.color.clear_bg));
                         btn3.setBackgroundColor(getApplication().getResources().getColor(R.color.vermilion));
                         bt3 = true;
                         b3.setVisibility(View.VISIBLE);
 
-                    } else if (bt3) {
+                    } else {
                         btn3.setTextColor(getApplication().getResources().getColor(R.color.vermilion));
                         btn3.setBackgroundColor(getApplication().getResources().getColor(R.color.clear_bg));
                         bt3 = false;
@@ -376,13 +386,13 @@ public class MainActivity extends AppCompatActivity implements SelectListener, V
             btn4.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (bt4 == false) {
+                    if (!bt4) {
                         btn4.setTextColor(getApplication().getResources().getColor(R.color.clear_bg));
                         btn4.setBackgroundColor(getApplication().getResources().getColor(R.color.vermilion));
                         bt4 = true;
                         b4.setVisibility(View.VISIBLE);
 
-                    } else if (bt4) {
+                    } else {
                         btn4.setTextColor(getApplication().getResources().getColor(R.color.vermilion));
                         btn4.setBackgroundColor(getApplication().getResources().getColor(R.color.clear_bg));
                         bt4 = false;
@@ -393,13 +403,13 @@ public class MainActivity extends AppCompatActivity implements SelectListener, V
             btn5.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (bt5 == false) {
+                    if (!bt5) {
                         btn5.setTextColor(getApplication().getResources().getColor(R.color.clear_bg));
                         btn5.setBackgroundColor(getApplication().getResources().getColor(R.color.vermilion));
                         bt5 = true;
                         b5.setVisibility(View.VISIBLE);
 
-                    } else if (bt5) {
+                    } else {
                         btn5.setTextColor(getApplication().getResources().getColor(R.color.vermilion));
                         btn5.setBackgroundColor(getApplication().getResources().getColor(R.color.clear_bg));
                         bt5 = false;
@@ -410,13 +420,13 @@ public class MainActivity extends AppCompatActivity implements SelectListener, V
             btn6.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (bt6 == false) {
+                    if (!bt6) {
                         btn6.setTextColor(getApplication().getResources().getColor(R.color.clear_bg));
                         btn6.setBackgroundColor(getApplication().getResources().getColor(R.color.vermilion));
                         bt6 = true;
                         b6.setVisibility(View.VISIBLE);
 
-                    } else if (bt6) {
+                    } else {
                         btn6.setTextColor(getApplication().getResources().getColor(R.color.vermilion));
                         btn6.setBackgroundColor(getApplication().getResources().getColor(R.color.clear_bg));
                         bt6 = false;
@@ -427,13 +437,13 @@ public class MainActivity extends AppCompatActivity implements SelectListener, V
             btn7.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (bt7 == false) {
+                    if (!bt7) {
                         btn7.setTextColor(getApplication().getResources().getColor(R.color.clear_bg));
                         btn7.setBackgroundColor(getApplication().getResources().getColor(R.color.vermilion));
                         bt7 = true;
                         b7.setVisibility(View.VISIBLE);
 
-                    } else if (bt7) {
+                    } else {
                         btn7.setTextColor(getApplication().getResources().getColor(R.color.vermilion));
                         btn7.setBackgroundColor(getApplication().getResources().getColor(R.color.clear_bg));
                         bt7 = false;
@@ -444,13 +454,13 @@ public class MainActivity extends AppCompatActivity implements SelectListener, V
             btn8.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (bt8 == false) {
+                    if (!bt8) {
                         btn8.setTextColor(getApplication().getResources().getColor(R.color.clear_bg));
                         btn8.setBackgroundColor(getApplication().getResources().getColor(R.color.vermilion));
                         bt8 = true;
                         b8.setVisibility(View.VISIBLE);
 
-                    } else if (bt8) {
+                    } else {
                         btn8.setTextColor(getApplication().getResources().getColor(R.color.vermilion));
                         btn8.setBackgroundColor(getApplication().getResources().getColor(R.color.clear_bg));
                         bt8 = false;
@@ -461,13 +471,13 @@ public class MainActivity extends AppCompatActivity implements SelectListener, V
             btn9.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (bt9 == false) {
+                    if (!bt9) {
                         btn9.setTextColor(getApplication().getResources().getColor(R.color.clear_bg));
                         btn9.setBackgroundColor(getApplication().getResources().getColor(R.color.vermilion));
                         bt9 = true;
                         b9.setVisibility(View.VISIBLE);
 
-                    } else if (bt9) {
+                    } else {
                         btn9.setTextColor(getApplication().getResources().getColor(R.color.vermilion));
                         btn9.setBackgroundColor(getApplication().getResources().getColor(R.color.clear_bg));
                         bt9 = false;
@@ -478,13 +488,13 @@ public class MainActivity extends AppCompatActivity implements SelectListener, V
             btn10.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (bt10 == false) {
+                    if (!bt10) {
                         btn10.setTextColor(getApplication().getResources().getColor(R.color.clear_bg));
                         btn10.setBackgroundColor(getApplication().getResources().getColor(R.color.vermilion));
                         bt10 = true;
                         b10.setVisibility(View.VISIBLE);
 
-                    } else if (bt10) {
+                    } else {
                         btn10.setTextColor(getApplication().getResources().getColor(R.color.vermilion));
                         btn10.setBackgroundColor(getApplication().getResources().getColor(R.color.clear_bg));
                         bt10 = false;
@@ -505,25 +515,30 @@ public class MainActivity extends AppCompatActivity implements SelectListener, V
 
     private final OnFetchDataListener<APIResponse> listener = new OnFetchDataListener <APIResponse>() {
         @Override
-        public void onFetchData(List<Data> list, String message) {
+        public void onFetchData(List<Data> list, String message, String option) {
 
             if(list.isEmpty()){
                 Toast.makeText(MainActivity.this, "No data found!", Toast.LENGTH_SHORT).show();
             }
             else {
-                showNews(list);
+                showNews(list, option);
                 load_dialog.dismiss();
             }
         }
 
         @Override
         public void onError(String message) {
-            Toast.makeText(MainActivity.this, "An Error Occured!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "An Error Occurred!", Toast.LENGTH_SHORT).show();
         }
     };
 
-    private void showNews(List<Data> list) {
-        adapter = new NewsAdapter(this, list, this);
+    private void showNews(List<Data> list, String option) {
+        if (option == "None"){
+            shownArticles = list;
+        } else {
+            shownArticles.addAll(list);
+        }
+        adapter = new NewsAdapter(this, shownArticles, this);
         recyclerView.setAdapter(adapter);
     }
 
@@ -563,6 +578,34 @@ public class MainActivity extends AppCompatActivity implements SelectListener, V
     @Override
     public void onClick(View view) {
 
+        Button button = (Button) view;
+        String category = button.getText().toString();
+
+        resetButtons();
+
+        load_dialog.setTitle("收集" + category + "新闻。。。");
+        load_dialog.show();
+        chosenCategory = category;
+
+        RequestManager manager = new RequestManager(this);
+        manager.getNewsHeadlines(listener,"2019-08-20", date_today, "", category, "None");
+        button.setBackgroundColor(getApplication().getResources().getColor(R.color.light_vermilion));
+    }
+
+    /* UTILS */
+    public void upRequest(){
+        load_dialog.setTitle("再刷新。。。");
+        load_dialog.show();
+        RequestManager manager = new RequestManager(this);
+        manager.getNewsHeadlines(listener, "2019-08-20", date_today, "", chosenCategory, "None");
+    }
+
+    public void downRequest(String date){
+        RequestManager manager = new RequestManager(this);
+        manager.getNewsHeadlines(listener, "2019-08-20", date, "", chosenCategory, "Add");
+    }
+
+    public void resetButtons(){
         b1.setBackgroundColor(getApplication().getResources().getColor(R.color.lightest_vermilion));
         b2.setBackgroundColor(getApplication().getResources().getColor(R.color.lightest_vermilion));
         b3.setBackgroundColor(getApplication().getResources().getColor(R.color.lightest_vermilion));
@@ -573,23 +616,6 @@ public class MainActivity extends AppCompatActivity implements SelectListener, V
         b8.setBackgroundColor(getApplication().getResources().getColor(R.color.lightest_vermilion));
         b9.setBackgroundColor(getApplication().getResources().getColor(R.color.lightest_vermilion));
         b10.setBackgroundColor(getApplication().getResources().getColor(R.color.lightest_vermilion));
-
-        Button button = (Button) view;
-        String category = button.getText().toString();
-        load_dialog.setTitle("收集" + category + "新闻。。。");
-        load_dialog.show();
-        chosenCategory = category;
-
-        RequestManager manager = new RequestManager(this);
-        manager.getNewsHeadlines(listener, "15", "2019-08-20", cur_date, "", category);
-        button.setBackgroundColor(getApplication().getResources().getColor(R.color.light_vermilion));
-    }
-
-    public void request(){
-        load_dialog.setTitle("再刷新。。。");
-        load_dialog.show();
-        RequestManager manager = new RequestManager(this);
-        manager.getNewsHeadlines(listener, "15", "2019-08-20", cur_date, "", chosenCategory);
     }
 }
 

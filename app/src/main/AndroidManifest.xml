@@ -28,7 +28,11 @@
             android:exported="false" />
         <activity
             android:name="com.java.zhuli.DetailActivity"
-            android:exported="false" />
+            android:parentActivityName="com.java.zhuli.MainActivity">
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="com.java.zhuli.MainActivity"/>
+        </activity>
         <activity
             android:name="com.java.zhuli.MainActivity"
             android:exported="true">

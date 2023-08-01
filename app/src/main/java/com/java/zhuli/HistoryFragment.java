@@ -15,8 +15,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.java.zhuli.Models.Data;
+import com.java.zhuli.adapters.HistoryAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
